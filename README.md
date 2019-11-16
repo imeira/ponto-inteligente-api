@@ -16,9 +16,11 @@ Certifique-se de ter o Maven instalado e adicionado ao PATH de seu sistema opera
 ```
 git clone git@github.com:imeira/ponto-inteligente-api.git
 cd ponto-inteligente-api
-mvn spring-boot:run
+linux:
+./mvnw spring-boot:run
 ou
-mvnw spring-boot:run
+windows:
+mvnw.cmd spring-boot:run
 Acesse os endpoints através da url http://localhost:8080
 ```
 ### Importando o projeto no Eclipse ou STS
