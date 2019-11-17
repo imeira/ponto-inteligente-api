@@ -19,7 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.imeira.pontointeligente.api.entities.Empresa;
 import com.imeira.pontointeligente.api.repositories.EmpresaRepository;
 
-//TODO revisar classe com erro
+//TODO revisar classe de erro
 //@RunWith(SpringRunner.class)
 //@SpringBootTest
 //@ActiveProfiles("test")
