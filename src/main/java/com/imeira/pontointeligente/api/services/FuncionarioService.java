@@ -1,5 +1,6 @@
 package com.imeira.pontointeligente.api.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.imeira.pontointeligente.api.entities.Funcionario;
@@ -38,4 +39,5 @@ public interface FuncionarioService {
 	 */
 	Optional<Funcionario> buscarPorId(Long id);
 
+    List<Funcionario> buscarPorEmpresaId(Long id);
 }

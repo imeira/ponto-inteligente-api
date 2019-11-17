@@ -2,7 +2,9 @@ package com.imeira.pontointeligente.api.controllers;
 
 import java.math.BigDecimal;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -12,12 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.imeira.pontointeligente.api.dtos.FuncionarioDto;
 import com.imeira.pontointeligente.api.entities.Funcionario;
@@ -68,6 +65,20 @@ public class FuncionarioController {
 
 		this.funcionarioService.persistir(funcionario.get());
 		response.setData(this.converterFuncionarioDto(funcionario.get()));
+
+		return ResponseEntity.ok(response);
+	}
+
+	@GetMapping(value = "/empresa/{id}")
+	public ResponseEntity<Response<List<FuncionarioDto>>> atualizar(@PathVariable("id") Long id) {
+		log.info("Buscando funcionários por id de empresa: {}", id);
+		Response<List<FuncionarioDto>> response = new Response<List<FuncionarioDto>>();
+
+		List<Funcionario> funcionarios = funcionarioService.buscarPorEmpresaId(id);
+
+		response.setData(funcionarios.stream()
+				.map(func -> converterFuncionarioDto(func))
+				.collect(Collectors.toList()));
 
 		return ResponseEntity.ok(response);
 	}

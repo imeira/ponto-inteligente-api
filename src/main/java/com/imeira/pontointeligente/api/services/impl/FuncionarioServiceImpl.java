@@ -1,5 +1,6 @@
 package com.imeira.pontointeligente.api.services.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -37,6 +38,12 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 	public Optional<Funcionario> buscarPorId(Long id) {
 		log.info("Buscando funcionário pelo IDl {}", id);
 		return this.funcionarioRepository.findById(id);
+	}
+
+	@Override
+	public List<Funcionario> buscarPorEmpresaId(Long id) {
+		log.info("Buscando funcionários pela empresa ID {}", id);
+		return funcionarioRepository.findByEmpresaId(id);
 	}
 
 }

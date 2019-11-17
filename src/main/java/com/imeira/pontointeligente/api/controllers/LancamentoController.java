@@ -2,7 +2,9 @@ package com.imeira.pontointeligente.api.controllers;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -67,7 +69,7 @@ public class LancamentoController {
 	public ResponseEntity<Response<Page<LancamentoDto>>> listarPorFuncionarioId(
 			@PathVariable("funcionarioId") Long funcionarioId,
 			@RequestParam(value = "pag", defaultValue = "0") int pag,
-			@RequestParam(value = "ord", defaultValue = "id") String ord,
+			@RequestParam(value = "ord", defaultValue = "data") String ord,
 			@RequestParam(value = "dir", defaultValue = "DESC") String dir) {
 		log.info("Buscando lançamentos por ID do funcionário: {}, página: {}", funcionarioId, pag);
 		Response<Page<LancamentoDto>> response = new Response<Page<LancamentoDto>>();
@@ -75,6 +77,27 @@ public class LancamentoController {
 		PageRequest pageRequest = PageRequest.of(pag, this.qtdPorPagina, Direction.valueOf(dir), ord);
 		Page<Lancamento> lancamentos = this.lancamentoService.buscarPorFuncionarioId(funcionarioId, pageRequest);
 		Page<LancamentoDto> lancamentosDto = lancamentos.map(lancamento -> this.converterLancamentoDto(lancamento));
+
+		response.setData(lancamentosDto);
+		return ResponseEntity.ok(response);
+	}
+
+	/**
+	 * Retorna a listagem de todos os lançamentos de um funcionário.
+	 *
+	 * @param funcionarioId
+	 * @return ResponseEntity<Response<LancamentoDto>>
+	 */
+	@GetMapping(value = "/funcionario/{funcionarioId}/todos")
+	public ResponseEntity<Response<List<LancamentoDto>>> listarTodosPorFuncionarioId(
+			@PathVariable("funcionarioId") Long funcionarioId) {
+		log.info("Buscando todos os lançamentos por ID do funcionário: {}", funcionarioId);
+		Response<List<LancamentoDto>> response = new Response<List<LancamentoDto>>();
+
+		List<Lancamento> lancamentos = this.lancamentoService.buscarTodosPorFuncionarioId(funcionarioId);
+		List<LancamentoDto> lancamentosDto = lancamentos.stream()
+				.map(lancamento -> this.converterLancamentoDto(lancamento))
+				.collect(Collectors.toList());
 
 		response.setData(lancamentosDto);
 		return ResponseEntity.ok(response);
@@ -178,6 +201,28 @@ public class LancamentoController {
 
 		this.lancamentoService.remover(id);
 		return ResponseEntity.ok(new Response<String>());
+	}
+
+	/**
+	 * Retorna o último lançamento de um funcionário.
+	 *
+	 * @param funcionarioId
+	 * @return ResponseEntity<Response<LancamentoDto>>
+	 */
+	@GetMapping(value = "/funcionario/{funcionarioId}/ultimo")
+	public ResponseEntity<Response<LancamentoDto>> ultimoPorFuncionarioId(
+			@PathVariable("funcionarioId") Long funcionarioId) {
+		log.info("Buscando o último lançamento por ID do funcionário: {}", funcionarioId);
+		Response<LancamentoDto> response = new Response<LancamentoDto>();
+
+		Optional<Lancamento> lancamento = this.lancamentoService.buscarUltimoPorFuncionarioId(funcionarioId);
+
+		if (lancamento.isPresent()) {
+			LancamentoDto lancamentoDto = this.converterLancamentoDto(lancamento.get());
+			response.setData(lancamentoDto);
+		}
+
+		return ResponseEntity.ok(response);
 	}
 
 	/**
